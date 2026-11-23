@@ -73,15 +73,15 @@ flowchart LR
 ```mermaid
 flowchart TD
     A["Call API endpoint"] --> B{"HTTP 200?"}
-    B -- No --> F["Log failure to audit log"]
-    B -- Yes --> C["Build rows:<br/>raw_payload + record_id + SHA-256 record_hash"]
-    C --> D{"Bronze table exists?"}
-    D -- No --> E["Initial load<br/>(create Delta table)"]
-    D -- Yes --> G["LEFT JOIN source ↔ target on record_id"]
+    B -- No --> F["Log failure"]
+    B -- Yes --> C["Build rows:<br/>raw_payload"]
+    C --> D{" table exists?"}
+    D -- No --> E["Initial load"]
+    D -- Yes --> G["JOIN"]
     G --> H{"New record or<br/>hash changed?"}
     H -- Yes --> I["Delta MERGE<br/>update / insert"]
     H -- No --> J["Skip: no changes"]
-    E --> K["Write audit record"]
+    E --> K["audit record"]
     I --> K
     J --> K
     F --> K
